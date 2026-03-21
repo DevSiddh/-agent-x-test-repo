@@ -1,0 +1,8 @@
+import requests  # Assume this isn't installed in the CI env
+
+def fetch_status(url):
+    response = requests.get(url)
+    return response.status_code
+
+if __name__ == "__main__":
+    print(fetch_status("https://google.com"))
