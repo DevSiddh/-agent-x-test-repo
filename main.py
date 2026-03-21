@@ -1,12 +1,11 @@
-# EnvironmentError Level 1 — Single missing env var
-# Classifier: EnvironmentError | missing_env_var | affected_file: main.py
-# Fix: add API_KEY to workflow env section (1 line)
+# Mixed Level 1 — Dependency + missing config key (two errors, first wins)
+# Classifier: DependencyError | ModuleNotFoundError | affected_file: main.py
+# Fix: add redis to requirements.txt AND add "host" key to config
 
-import os
+import redis
 
-api_key = os.environ.get("API_KEY")
-if not api_key:
-    raise EnvironmentError("environment variable API_KEY not set")
+config = {"port": 6379}  # missing "host" key
 
-print(f"Connected with key: {api_key[:4]}****")
-
+client = redis.Redis(host=config["host"], port=config["port"])
+client.ping()
+print("Redis connected")
