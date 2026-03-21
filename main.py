@@ -1,7 +1,21 @@
- def calculate_discount(price: float, discount_pct: float) -> float:
-      assert 0 <= discount_pct <= 100, f"discount {discount_pct} must be between 0 and 100"
-      return price * (1 - discount_pct / 100)
+# main.py
+import random
 
-  if __name__ == "__main__":
-      print(calculate_discount(100.0, 150.0))
+def process_transaction(amount):
+    # Logic: Only apply a high-value flag if the amount is over 100
+    if amount > 100:
+        is_high_value = True
+        print(f"Processing large amount: {amount}")
+    
+    # This will fail if amount <= 100 because 'is_high_value' was never defined
+    if is_high_value:
+        return amount * 0.95  # Apply 5% discount
+    
+    return amount
 
+if __name__ == "__main__":
+    # Test case that works
+    print(f"Result 1: {process_transaction(150)}")
+    
+    # Test case that triggers the Runtime Error
+    print(f"Result 2: {process_transaction(50)}")
