@@ -1,7 +1,9 @@
-import pandas as pd # Assuming pandas isn't in the CI env
+class User:
+    def __init__(self, name):
+        self.name = name
 
-def process():
-    df = pd.DataFrame({'a': [1, 2]})
-    print(df)
+def fetch_user(id):
+    return None # Simulating a database "Not Found"
 
-process()
+user = fetch_user(1)
+print(user.name) # AttributeError: 'NoneType' object has no attribute 'name'
