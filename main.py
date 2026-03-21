@@ -1,24 +1,21 @@
-# RuntimeError Level 3 — TypeError in nested function calls
-# Classifier: RuntimeError | type_error | affected_file: main.py
-# Fix: add None guard in parse_age() or default in create_user() (3-4 lines)
+ #RuntimeError Level 2 — Pydantic field conflicts with protected namespace
+# Classifier: RuntimeError | pydantic_namespace | affected_file: main.py
+# Fix: rename fields or add model_config to allow model_ prefix (3-4 lines)
 
-def parse_age(value: str) -> int:
-    return int(value)  # TypeError if value is None
-
-
-def create_user(name: str, age_str: str) -> dict:
-    return {"name": name, "age": parse_age(age_str)}
+from pydantic import BaseModel
 
 
-def process_users(data: list[dict]) -> list[dict]:
-    return [create_user(d["name"], d.get("age")) for d in data]  # age may be None
+class PredictionResult(BaseModel):
+    model_id: str        # conflicts with protected namespace "model_"
+    model_name: str      # conflicts with protected namespace "model_"
+    model_score: float   # conflicts with protected namespace "model_"
+    prediction: str
 
 
-if __name__ == "__main__":
-    users = [
-        {"name": "Alice", "age": "25"},
-        {"name": "Bob", "age": "30"},
-        {"name": "Charlie"},            # missing age → None → TypeError
-    ]
-    result = process_users(users)
-    print(result)
+result = PredictionResult(
+    model_id="gpt-4",
+    model_name="GPT-4 Turbo",
+    model_score=0.97,
+    prediction="positive",
+)
+print(result)
