@@ -1,8 +1,12 @@
-# DependencyError Level 1 — Simple missing import
+# DependencyError Level 2 — Import inside function, two missing packages
 # Classifier: DependencyError | ModuleNotFoundError | affected_file: main.py
-# Fix: add pandas to requirements.txt (1 line)
+# Fix: add numpy and scipy to requirements.txt (2 lines)
 
-import pandas
+def analyse(values: list) -> float:
+    import numpy as np
+    from scipy import stats
+    arr = np.array(values)
+    return float(stats.mean(arr))
 
-data = pandas.DataFrame({"value": [1, 2, 3]})
-print(data)
+if __name__ == "__main__":
+    print(analyse([10, 20, 30, 40]))
