@@ -1,6 +1,6 @@
 # EnvironmentError Level 1 — Single missing env var
 # Classifier: EnvironmentError | missing_env_var | affected_file: main.py
-# Fix: add API_KEY to workflow env section (1 line)
+# Fix: add API_KEY to workflow env section (1 line)g
 
 import os
 
