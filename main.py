@@ -1,30 +1,21 @@
-# Mixed Level 3 — Pydantic + env var + missing table (structural — may escalate)
-# Classifier: RuntimeError | pydantic_namespace (first match wins)
-# This may hit structural escalation (3 interacting issues, patch > 15 lines)
+# RuntimeError Level 2 — Pydantic field conflicts with protected namespace
+# Classifier: RuntimeError | pydantic_namespace | affected_file: main.py
+# Fix: rename fields or add model_config to allow model_ prefix (3-4 lines)
 
-import os
-import sqlite3
 from pydantic import BaseModel
 
 
-class ModelMetrics(BaseModel):
-    model_version: str     # conflicts with protected namespace "model_"
-    model_accuracy: float  # conflicts with protected namespace "model_"
-    model_loss: float      # conflicts with protected namespace "model_"
+class PredictionResult(BaseModel):
+    model_id: str        # conflicts with protected namespace "model_"
+    model_name: str      # conflicts with protected namespace "model_"
+    model_score: float   # conflicts with protected namespace "model_"
+    prediction: str
 
 
-def save_metrics(metrics: ModelMetrics) -> None:
-    db_path = os.environ.get("METRICS_DB")
-    if not db_path:
-        raise EnvironmentError("environment variable METRICS_DB not set")
-    conn = sqlite3.connect(db_path)
-    conn.execute("INSERT INTO model_runs VALUES (?, ?, ?)",
-                 (metrics.model_version, metrics.model_accuracy, metrics.model_loss))
-    conn.commit()
-    conn.close()
-
-
-if __name__ == "__main__":
-    m = ModelMetrics(model_version="v1", model_accuracy=0.95, model_loss=0.05)
-    save_metrics(m)
-    print("Saved")
+result = PredictionResult(
+    model_id="gpt-4",
+    model_name="GPT-4 Turbo",
+    model_score=0.97,
+    prediction="positive",
+)
+print(result)
