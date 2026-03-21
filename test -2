@@ -1,9 +1,0 @@
-class User:
-    def __init__(self, name):
-        self.name = name
-
-def fetch_user(id):
-    return None # Simulating a database "Not Found"
-
-user = fetch_user(1)
-print(user.name) # AttributeError: 'NoneType' object has no attribute 'name'
