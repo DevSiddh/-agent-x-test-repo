@@ -1,12 +1,12 @@
-# ConfigError Level 1 — Missing key in config dict
-# Classifier: ConfigError | missing_key | affected_file: main.py
-# Fix: add "database" key to config dict (1 line)
+# ConfigError Level 2 — SQLite query on nonexistent table
+# Classifier: ConfigError | no_such_table | affected_file: main.py
+# Fix: CREATE TABLE users before querying (add migration)
 
-config = {
-    "host": "localhost",
-    "port": 5432,
-    # "database" key intentionally missing
-}
+import sqlite3
 
-db_name = config["database"]
-print(f"Connecting to {config['host']}:{config['port']}/{db_name}")
+conn = sqlite3.connect(":memory:")
+# Table 'users' was never created — migration missing
+cursor = conn.execute("SELECT id, name, email FROM users WHERE active=1")
+rows = cursor.fetchall()
+print(f"Found {len(rows)} active users")
+conn.close()
