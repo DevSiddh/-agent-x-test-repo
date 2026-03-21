@@ -1,12 +1,21 @@
-# ConfigError Level 2 — SQLite query on nonexistent table
-# Classifier: ConfigError | no_such_table | affected_file: main.py
-# Fix: CREATE TABLE users before querying (add migration)
+# ConfigError Level 3 — Malformed YAML config + cascading failure
+# Classifier: ConfigError | malformed_yaml | affected_file: main.py
+# Fix: fix YAML syntax (close the bracket on line 6)
 
-import sqlite3
+import yaml
 
-conn = sqlite3.connect(":memory:")
-# Table 'users' was never created — migration missing
-cursor = conn.execute("SELECT id, name, email FROM users WHERE active=1")
-rows = cursor.fetchall()
-print(f"Found {len(rows)} active users")
-conn.close()
+CONFIG = """
+database:
+  host: localhost
+  port: 5432
+  tables: [users, orders, products
+credentials:
+  user: admin
+  password: secret
+"""
+
+try:
+    config = yaml.safe_load(CONFIG)
+    print(f"DB host: {config['database']['host']}")
+except yaml.YAMLError as exc:
+    raise yaml.YAMLError(f"yaml error: malformed YAML in config.yaml — {exc}")
