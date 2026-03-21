@@ -1,12 +1,12 @@
-# DependencyError Level 2 — Import inside function, two missing packages
-# Classifier: DependencyError | ModuleNotFoundError | affected_file: main.py
-# Fix: add numpy and scipy to requirements.txt (2 lines)
+# EnvironmentError Level 1 — Single missing env var
+# Classifier: EnvironmentError | missing_env_var | affected_file: main.py
+# Fix: add API_KEY to workflow env section (1 line)
 
-def analyse(values: list) -> float:
-    import numpy as np
-    from scipy import stats
-    arr = np.array(values)
-    return float(stats.mean(arr))
+import os
 
-if __name__ == "__main__":
-    print(analyse([10, 20, 30, 40]))
+api_key = os.environ.get("API_KEY")
+if not api_key:
+    raise EnvironmentError("environment variable API_KEY not set")
+
+print(f"Connected with key: {api_key[:4]}****")
+
