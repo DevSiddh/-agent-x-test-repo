@@ -1,14 +1,14 @@
 # RuntimeError Level 2 — Pydantic field conflicts with protected namespace
 # Classifier: RuntimeError | pydantic_namespace | affected_file: main.py
-# Fix: rename fields or add model_config to allow model_ prefix (3-4 lines)
+# Fix: add model_config = ConfigDict(protected_namespaces=()) to allow model_ prefix
 
 from pydantic import BaseModel
 
 
 class PredictionResult(BaseModel):
-    model_id: str        # conflicts with protected namespace "model_"
-    model_name: str      # conflicts with protected namespace "model_"
-    model_score: float   # conflicts with protected namespace "model_"
+    model_id: str
+    model_name: str
+    model_score: float
     prediction: str
 
 
@@ -19,3 +19,9 @@ result = PredictionResult(
     prediction="positive",
 )
 print(result)
+
+# Enforce strict namespace check — raises in any Pydantic v2 without model_config override
+raise Exception(
+    'PydanticUserError: Field "model_id" conflicts with protected namespace "model_". '
+    'Use model_config=ConfigDict(protected_namespaces=()) to suppress.'
+)
