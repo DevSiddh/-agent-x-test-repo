@@ -1,11 +1,11 @@
- EnvironmentError Level 3 — Config class with 3 missing env vars
-# Classifier: EnvironmentError | missing_env_var | affected_file: config.py
-# Fix: add DATABASE_URL, SECRET_KEY, EXTERNAL_API_URL to workflow env
+# EnvironmentError Level 1 — Single missing env var
+# Classifier: EnvironmentError | missing_env_var | affected_file: main.py
+# Fix: add API_KEY to workflow env section (1 line)
 
-from config import AppConfig
+import os
 
-if __name__ == "__main__":
-    cfg = AppConfig()
-    cfg.validate()
-    print(f"Connected to {cfg.db_url}")
+api_key = os.environ.get("API_KEY")
+if not api_key:
+    raise EnvironmentError("environment variable API_KEY not set")
 
+print(f"Connected with key: {api_key[:4]}****")
