@@ -1,27 +1,11 @@
-# RuntimeError Level 2 — Pydantic field conflicts with protected namespace
-# Classifier: RuntimeError | pydantic_namespace | affected_file: main.py
-# Fix: add model_config = ConfigDict(protected_namespaces=()) to allow model_ prefix
+# EnvironmentError Level 1 — Single missing env var
+# Classifier: EnvironmentError | missing_env_var | affected_file: main.py
+# Fix: add API_KEY to workflow env section (1 line)
 
-from pydantic import BaseModel
+import os
 
+api_key = os.environ.get("API_KEY")
+if not api_key:
+    raise EnvironmentError("environment variable API_KEY not set")
 
-class PredictionResult(BaseModel):
-    model_id: str
-    model_name: str
-    model_score: float
-    prediction: str
-
-
-result = PredictionResult(
-    model_id="gpt-4",
-    model_name="GPT-4 Turbo",
-    model_score=0.97,
-    prediction="positive",
-)
-print(result)
-
-# Enforce strict namespace check — raises in any Pydantic v2 without model_config override
-raise Exception(
-    'PydanticUserError: Field "model_id" conflicts with protected namespace "model_". '
-    'Use model_config=ConfigDict(protected_namespaces=()) to suppress.'
-)
+print(f"Connected with key: {api_key[:4]}****")
