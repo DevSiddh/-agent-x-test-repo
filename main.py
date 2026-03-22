@@ -1,17 +1,11 @@
-# BuildError Level 3 — Docker image build fails with missing dependency in image
-# Classifier: BuildError | docker_failure | affected_file: Dockerfile
-# Fix: correct base image + add missing apt-get install stephyhh
+# EnvironmentError Level 1 — Single missing env var
+# Classifier: EnvironmentError | missing_env_var | affected_file: main.py
+# Fix: add API_KEY to workflow env section (1 line)
 
-import subprocess
+import os
 
-result = subprocess.run(
-    ["docker", "build", "--no-cache", "-t", "myapp-prod:latest", "-f", "Dockerfile.prod", "."],
-    capture_output=True,
-    text=True,
-)
+api_key = os.environ.get("API_KEY")
+if not api_key:
+    raise EnvironmentError("environment variable API_KEY not set")
 
-if result.returncode != 0:
-    print(result.stderr)
-    raise RuntimeError(f"failed to build image: {result.stderr[:300]}")
-
-print("Production image built successfully")
+print(f"Connected with key: {api_key[:4]}****")
